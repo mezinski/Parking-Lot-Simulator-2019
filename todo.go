@@ -2,16 +2,27 @@ package main
 
 import (
 	"database/sql"
+	"fmt"
 
 	"gopkg.in/echo.v3"
 
+	"github.com/jinzhu/gorm"
+	_ "github.com/lib/pq"
 	_ "github.com/mattn/go-sqlite3"
 )
 
 func main() {
 
-	db := initDB("storage.db")
-	migrate(db)
+	// db := initDB("storage.db")
+	// migrate(db)
+
+	db, err := gorm.Open("postgres", "host=0.0.0.0 port=5432 user=postgres dbname=postgres")
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println(err)
+	defer db.Close()
 
 	e := echo.New()
 
@@ -50,5 +61,4 @@ func migrate(db *sql.DB) {
 	if err != nil {
 		panic(err)
 	}
-
 }
