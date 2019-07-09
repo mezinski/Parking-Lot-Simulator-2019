@@ -4,6 +4,8 @@ import (
 	"database/sql"
 	"fmt"
 
+	"Golang-Code/Go-with-Vue-2/models"
+
 	"gopkg.in/echo.v3"
 
 	"github.com/jinzhu/gorm"
@@ -16,10 +18,12 @@ func main() {
 	// db := initDB("storage.db")
 	// migrate(db)
 
-	db, err := gorm.Open("postgres", "host=0.0.0.0 port=5432 user=postgres dbname=postgres")
+	db, err := gorm.Open("postgres", "host=0.0.0.0 port=5439 user=postgres dbname=postgres sslmode=disable")
 	if err != nil {
 		panic(err)
 	}
+
+	db.AutoMigrate(&models.Task{})
 
 	fmt.Println(err)
 	defer db.Close()
