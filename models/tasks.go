@@ -1,11 +1,15 @@
 package models
 
-import "github.com/jinzhu/gorm"
+import (
+	"fmt"
+
+	"github.com/jinzhu/gorm"
+)
 
 //Task struct
 type Task struct {
-	ID   uint `gorm:"primary_key"`
-	Name string
+	ID   uint   `json:"id"`
+	Name string `json:"name"`
 }
 
 //TaskCollection ...
@@ -41,7 +45,7 @@ func GetTasks(db *gorm.DB) TaskCollection {
 func PutTask(db *gorm.DB, name string) (int64, error) {
 
 	var task = Task{Name: name}
-
+	fmt.Println(task)
 	err := db.Save(&task)
 	if err != nil {
 		panic(err)

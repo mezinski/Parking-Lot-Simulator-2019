@@ -28,11 +28,11 @@ func PutTask(db *gorm.DB) echo.HandlerFunc {
 
 		id, err := models.PutTask(db, task.Name)
 		if err != nil {
-			return c.JSON(http.StatusCreated, H{
-				"created": id,
-			})
+			return err
 		}
-		return err
+		return c.JSON(http.StatusCreated, H{
+			"created": id,
+		})
 	}
 }
 
@@ -43,10 +43,10 @@ func DeleteTask(db *gorm.DB) echo.HandlerFunc {
 
 		_, err := models.DeleteTask(db, id)
 		if err != nil {
-			return c.JSON(http.StatusOK, H{
-				"deleted": id,
-			})
+			return err
 		}
-		return err
+		return c.JSON(http.StatusOK, H{
+			"deleted": id,
+		})
 	}
 }
