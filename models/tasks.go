@@ -46,16 +46,17 @@ func PutTask(db *gorm.DB, name string) (int64, error) {
 
 	var task = Task{Name: name}
 	fmt.Println(task)
-	err := db.Save(&task)
-	if err != nil {
-		panic(err)
-	}
-	idInt := int64(task.ID)
 
 	result := db.Create(&task)
 	if result.Error != nil {
 		panic(result.Error)
 	}
+
+	err := db.Save(&task)
+	if err != nil {
+		panic(err)
+	}
+	idInt := int64(task.ID)
 
 	return idInt, result.Error
 }
