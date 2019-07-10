@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 
+	"Golang-Code/Go-with-Vue-2/handlers"
 	"Golang-Code/Go-with-Vue-2/models"
 
 	"gopkg.in/echo.v3"
