@@ -1,8 +1,6 @@
 package models
 
 import (
-	"fmt"
-
 	"github.com/jinzhu/gorm"
 )
 
@@ -45,19 +43,18 @@ func GetTasks(db *gorm.DB) TaskCollection {
 func PutTask(db *gorm.DB, name string) (int64, error) {
 
 	var task = Task{Name: name}
-	fmt.Println(task)
 
 	result := db.Create(&task)
 	if result.Error != nil {
 		panic(result.Error)
 	}
 
-	err := db.Save(&task)
-	if err != nil {
-		panic(err)
+	result = db.Save(&task)
+	if result.Error != nil {
+		panic(result.Error)
 	}
-	idInt := int64(task.ID)
 
+	idInt := int64(task.ID)
 	return idInt, result.Error
 }
 
