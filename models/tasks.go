@@ -1,6 +1,8 @@
 package models
 
 import (
+	"fmt"
+
 	"github.com/jinzhu/gorm"
 )
 
@@ -61,10 +63,20 @@ func PutTask(db *gorm.DB, name string) (int64, error) {
 //DeleteTask ...
 func DeleteTask(db *gorm.DB, id int) (int64, error) {
 
-	result := db.Where("id = ?", id).Delete(&Task{})
-	if result.Error != nil {
-		panic(result.Error)
-	}
+	var result *gorm.DB
+	isRecord := true
 
-	return result.RowsAffected, result.Error
+	if err := db.Where("id = ?", id).First(&Task{}).Error; err != nil {
+		isRecord = false
+	} else {
+		isRecord = true
+	}
+	fmt.Println(isRecord)
+	fmt.Println(result)
+	if isRecord {
+		result = db.Where("id = ?", id).Delete(&Task{})
+		return result.RowsAffected, result.Error
+	}
+	fmt.Println("here")
+	return 0, fmt.Errorf("No record found for id: %d", id)
 }

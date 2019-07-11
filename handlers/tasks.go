@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"Golang-Code/Go-with-Vue-2/models"
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -27,7 +28,8 @@ func PutTask(db *gorm.DB) echo.HandlerFunc {
 		c.Bind(&task)
 
 		id, err := models.PutTask(db, task.Name)
-		if err != nil {
+
+		if err == nil {
 			return c.JSON(http.StatusCreated, H{
 				"created": id,
 			})
@@ -40,13 +42,16 @@ func PutTask(db *gorm.DB) echo.HandlerFunc {
 func DeleteTask(db *gorm.DB) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		id, _ := strconv.Atoi(c.Param("id"))
-
 		_, err := models.DeleteTask(db, id)
-		if err != nil {
+
+		if err == nil {
 			return c.JSON(http.StatusOK, H{
 				"deleted": id,
 			})
 		}
-		return err
+		fmt.Println(err)
+		return c.JSON(http.StatusOK, H{
+			"error": fmt.Sprintf("%s", err),
+		})
 	}
 }
