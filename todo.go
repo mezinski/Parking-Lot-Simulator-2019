@@ -1,8 +1,6 @@
 package main
 
 import (
-	"fmt"
-
 	"Golang-Code/Go-with-Vue-2/handlers"
 	"Golang-Code/Go-with-Vue-2/models"
 
@@ -25,7 +23,6 @@ func main() {
 
 	db.AutoMigrate(&models.Task{})
 
-	fmt.Println(err)
 	defer db.Close()
 
 	e := echo.New()
