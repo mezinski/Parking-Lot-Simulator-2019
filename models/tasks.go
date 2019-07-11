@@ -75,8 +75,8 @@ func DeleteTask(db *gorm.DB, id int) (int64, error) {
 	fmt.Println(result)
 	if isRecord {
 		result = db.Where("id = ?", id).Delete(&Task{})
-		return result.RowsAffected, result.Error
+		return result.RowsAffected, fmt.Errorf("Deleted task with id %d successfully", id)
 	}
 	fmt.Println("here")
-	return 0, fmt.Errorf("No record found for id: %d", id)
+	return 0, fmt.Errorf("No record found for task with id %d", id)
 }

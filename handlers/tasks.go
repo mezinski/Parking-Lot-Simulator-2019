@@ -46,12 +46,14 @@ func DeleteTask(db *gorm.DB) echo.HandlerFunc {
 
 		if err == nil {
 			return c.JSON(http.StatusOK, H{
-				"deleted": id,
+				"delete_id": id,
+				"response":  fmt.Sprintf("%s", err),
 			})
 		}
 		fmt.Println(err)
 		return c.JSON(http.StatusOK, H{
-			"error": fmt.Sprintf("%s", err),
+			"delete_id": id,
+			"response":  fmt.Sprintf("%s", err),
 		})
 	}
 }
