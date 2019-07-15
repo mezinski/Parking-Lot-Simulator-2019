@@ -17,10 +17,6 @@ type TaskCollection struct {
 	Tasks []Task `json:"items"`
 }
 
-func main() {
-
-}
-
 //GetTasks ...
 func GetTasks(db *gorm.DB) TaskCollection {
 	rows, err := db.Table("tasks").Rows()
