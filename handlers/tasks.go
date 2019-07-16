@@ -96,7 +96,7 @@ func (v *Vehicles) PostVehiclePayment(c echo.Context) error {
 	_, licensePlate, duration, totalPaid, err := models.PostVehiclePayment(v.Db, id)
 
 	if err == nil {
-		message := fmt.Sprintf("Thank you, %s, for choosing sketchypark. Payment has been processed by your VISA, Card no. %d", viper.GetString("config.user-data.name-on-card"), viper.GetInt("config.user-data.credit-card-no"))
+		message := fmt.Sprintf("Thank you, %s, for choosing sketchypark. Payment has been processed by your %s, Card no. %d", viper.GetString("config.user-data.name-on-card"), viper.GetString("config.user-data.credit-card-type"), viper.GetInt("config.user-data.credit-card-no"))
 		return c.JSON(http.StatusOK, H{
 			"id":            id,
 			"license_plate": licensePlate,

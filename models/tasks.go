@@ -19,7 +19,7 @@ type ParkedVehicle struct {
 	LicensePlate string `json:"license_plate"`
 	Duration     int    `json:"duration"`
 	IsParked     bool   `json:"is_parked"`
-	TotalPaid    uint   `json:"total_paid"`
+	TotalPaid    int    `json:"total_paid"`
 }
 
 //TaskCollection ...
@@ -139,7 +139,7 @@ func PostVehicleDuration(db *gorm.DB, id int, duration int) (int64, string, int,
 }
 
 //PostVehiclePayment ...
-func PostVehiclePayment(db *gorm.DB, id int) (int64, string, int, uint, error) {
+func PostVehiclePayment(db *gorm.DB, id int) (int64, string, int, int, error) {
 
 	var result *gorm.DB
 	var isRecord bool
