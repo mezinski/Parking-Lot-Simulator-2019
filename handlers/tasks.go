@@ -18,7 +18,8 @@ type Todos struct {
 
 //Vehicles ...
 type Vehicles struct {
-	Db *gorm.DB
+	Db  *gorm.DB
+	Cfg *viper.Viper
 }
 
 //H ...
@@ -93,7 +94,7 @@ func (v *Vehicles) PostVehicleDuration(c echo.Context) error {
 func (v *Vehicles) PostVehiclePayment(c echo.Context) error {
 
 	id, _ := strconv.Atoi(c.Param("id"))
-	_, licensePlate, duration, totalPaid, err := models.PostVehiclePayment(v.Db, id)
+	_, licensePlate, duration, totalPaid, err := models.PostVehiclePayment(v.Db, v.Cfg, id)
 
 	if err == nil {
 		message := fmt.Sprintf("Thank you, %s, for choosing sketchypark. Payment has been processed by your %s, Card no. %s", viper.GetString("config.user-data.name-on-card"), viper.GetString("config.user-data.credit-card-type"), viper.GetString("config.user-data.credit-card-no"))

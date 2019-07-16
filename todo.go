@@ -30,6 +30,7 @@ func main() {
 
 	todo.Db = db
 	vehicle.Db = db
+	vehicle.Cfg = v
 
 	e := echo.New()
 

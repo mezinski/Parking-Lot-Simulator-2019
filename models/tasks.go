@@ -139,7 +139,7 @@ func PostVehicleDuration(db *gorm.DB, id int, duration int) (int64, string, int,
 }
 
 //PostVehiclePayment ...
-func PostVehiclePayment(db *gorm.DB, id int) (int64, string, int, int, error) {
+func PostVehiclePayment(db *gorm.DB, v *viper.Viper, id int) (int64, string, int, int, error) {
 
 	var result *gorm.DB
 	var isRecord bool
@@ -153,17 +153,17 @@ func PostVehiclePayment(db *gorm.DB, id int) (int64, string, int, int, error) {
 	}
 	fmt.Println(vehicle)
 	if isRecord {
-
+		fmt.Println(vehicle.Duration)
 		if vehicle.Duration > 0 {
 			switch vehicle.Duration {
 			case 1:
-				price = viper.GetInt("config.parking-lot.starting-rate")
+				price = v.GetInt("config.parking-lot.starting-rate")
 			case 3:
-				price = (viper.GetInt("config.parking-lot.starting-rate") * viper.GetInt("config.parking-lot.three-hour-mod"))
+				price = (v.GetInt("config.parking-lot.starting-rate") * v.GetInt("config.parking-lot.three-hour-mod"))
 			case 6:
-				price = (viper.GetInt("config.parking-lot.starting-rate") * viper.GetInt("config.parking-lot.six-hour-mod"))
+				price = (v.GetInt("config.parking-lot.starting-rate") * v.GetInt("config.parking-lot.six-hour-mod"))
 			case 24:
-				price = (viper.GetInt("config.parking-lot.starting-rate") * viper.GetInt("config.parking-lot.all-day-mod"))
+				price = (v.GetInt("config.parking-lot.starting-rate") * v.GetInt("config.parking-lot.all-day-mod"))
 			default:
 				return 0, "N/A", 0, 0, fmt.Errorf("%dhrs is not one of our parking options", vehicle.Duration)
 			}
