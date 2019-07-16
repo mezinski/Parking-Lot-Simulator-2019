@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	"github.com/jinzhu/gorm"
-	"github.com/spf13/viper"
 )
 
 //Task struct
@@ -135,10 +134,11 @@ func PostVehiclePayment(db *gorm.DB, id int) (int64, string, uint, uint, error) 
 	} else {
 		isRecord = true
 	}
-
+	fmt.Println(vehicle)
 	if isRecord {
-		result = db.Where("id = ?", id).Update("duration = ?, total_paid = ?, is_parked = false", 1, 3)
-		return result.RowsAffected, vehicle.LicensePlate, vehicle.Duration, vehicle.TotalPaid, fmt.Errorf("Thank you for choosing sketchypark. Payment has been processed by your VISA, Card no. %d", viper.GetInt("config.user-data.credit-card-no"))
+		result = db.Model(&vehicle).Where("id = ?", id).Updates(map[string]interface{}{"duration": 1, "total_paid": 3, "is_parked": false})
+		fmt.Println(vehicle)
+		return result.RowsAffected, vehicle.LicensePlate, vehicle.Duration, vehicle.TotalPaid, nil
 	}
 
 	return 0, "N/A", 0, 0, fmt.Errorf("No record found for vehicle with ticket id %d", id)

@@ -41,7 +41,7 @@ func main() {
 
 	e.POST("tickets", vehicle.PostVehicleEntry)
 	//e.GET("/tickets/:id")
-	//e.POST("/payments/:id")
+	e.POST("/payments/:id", vehicle.PostVehiclePayment)
 
 	e.Logger.Fatal(e.Start(":8000"))
 }

@@ -7,6 +7,7 @@ import (
 	"strconv"
 
 	"github.com/jinzhu/gorm"
+	"github.com/spf13/viper"
 	"gopkg.in/echo.v3"
 )
 
@@ -73,14 +74,18 @@ func (v *Vehicles) PostVehiclePayment(c echo.Context) error {
 	_, licensePlate, duration, totalPaid, err := models.PostVehiclePayment(v.Db, id)
 
 	if err == nil {
+		message := fmt.Sprintf("Thank you for choosing sketchypark. Payment has been processed by your VISA, Card no. %d", viper.GetInt("config.user-data.credit-card-no"))
 		return c.JSON(http.StatusOK, H{
 			"id":            id,
 			"license_plate": licensePlate,
 			"duration":      duration,
 			"total_paid":    totalPaid,
+			"message":       message,
 		})
 	}
-	return c.JSON(http.StatusOK, H{})
+	return c.JSON(http.StatusOK, H{
+		"message": err.Error(),
+	})
 }
 
 //DeleteTask ...
