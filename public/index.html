@@ -24,7 +24,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-4">
-                    <h2>My Tasks</h2>
+                    <h2>Parking Lot</h2>
                     <ul class="list-group">
                         <li class="list-group-item" v-for="task in tasks">
                             {{ task.name }}
@@ -38,7 +38,7 @@
                     <div class="input-group">
                         <input type="text" 
                             class="form-control" 
-                            placeholder="New Task" 
+                            placeholder="Enter License Plate" 
                             v-on:keyup.enter="createTask"
                             v-model="newTask.name">
                         <span class="input-group-btn">

@@ -1,8 +1,10 @@
 package main
 
 import (
+	"Golang-Code/Go-with-Vue-2/config"
 	"Golang-Code/Go-with-Vue-2/handlers"
 	"Golang-Code/Go-with-Vue-2/models"
+	"fmt"
 
 	"gopkg.in/echo.v3"
 
@@ -13,17 +15,22 @@ import (
 func main() {
 
 	var todo handlers.Todos
+	var vehicle handlers.Vehicles
 
-	db, err := gorm.Open("postgres", "host=0.0.0.0 port=5439 user=postgres dbname=postgres sslmode=disable")
+	v, _ := config.InitConfig()
+
+	db, err := gorm.Open("postgres", fmt.Sprintf("host=%s port=%s user=%s dbname=%s sslmode=disable", v.GetString("config.database.host"), v.GetString("config.database.port"), v.GetString("config.database.user"), v.GetString("config.database.dbname")))
 	if err != nil {
 		panic(err)
 	}
 
 	db.AutoMigrate(&models.Task{})
+	db.AutoMigrate(&models.ParkedVehicle{})
 
 	defer db.Close()
 
 	todo.Db = db
+	vehicle.Db = db
 
 	e := echo.New()
 
@@ -31,6 +38,10 @@ func main() {
 	e.GET("tasks", todo.GetTasks)
 	e.PUT("tasks", todo.PutTask)
 	e.DELETE("/tasks/:id", todo.DeleteTask)
+
+	e.POST("tickets", vehicle.PostVehicleEntry)
+	//e.GET("/tickets/:id")
+	//e.POST("/payments/:id")
 
 	e.Logger.Fatal(e.Start(":8000"))
 }

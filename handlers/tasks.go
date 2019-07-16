@@ -15,6 +15,11 @@ type Todos struct {
 	Db *gorm.DB
 }
 
+//Vehicles ...
+type Vehicles struct {
+	Db *gorm.DB
+}
+
 //H ...
 type H map[string]interface{}
 
@@ -38,6 +43,44 @@ func (t *Todos) PutTask(c echo.Context) error {
 		})
 	}
 	return err
+}
+
+//PostVehicleEntry ...
+func (v *Vehicles) PostVehicleEntry(c echo.Context) error {
+
+	var vehicle models.ParkedVehicle
+
+	c.Bind(&vehicle)
+
+	id, err := models.PostVehicleEntry(v.Db, vehicle.LicensePlate)
+	fmt.Println(id)
+	fmt.Println(err)
+	if err == nil {
+		return c.JSON(http.StatusCreated, H{
+			"created":       id,
+			"license_plate": vehicle.LicensePlate,
+		})
+	}
+	return c.JSON(http.StatusOK, H{
+		"error": err.Error(),
+	})
+}
+
+//PostVehiclePayment ...
+func (v *Vehicles) PostVehiclePayment(c echo.Context) error {
+
+	id, _ := strconv.Atoi(c.Param("id"))
+	_, licensePlate, duration, totalPaid, err := models.PostVehiclePayment(v.Db, id)
+
+	if err == nil {
+		return c.JSON(http.StatusOK, H{
+			"id":            id,
+			"license_plate": licensePlate,
+			"duration":      duration,
+			"total_paid":    totalPaid,
+		})
+	}
+	return c.JSON(http.StatusOK, H{})
 }
 
 //DeleteTask ...
