@@ -1,7 +1,6 @@
 package main
 
 import (
-	"Golang-Code/Go-with-Vue-2/config"
 	"Golang-Code/Go-with-Vue-2/handlers"
 	"Golang-Code/Go-with-Vue-2/models"
 	"fmt"
@@ -17,7 +16,7 @@ func main() {
 	var todo handlers.Todos
 	var vehicle handlers.Vehicles
 
-	v, _ := config.InitConfig()
+	v, _ := InitConfig()
 
 	db, err := gorm.Open("postgres", fmt.Sprintf("host=%s port=%s user=%s dbname=%s sslmode=disable", v.GetString("config.database.host"), v.GetString("config.database.port"), v.GetString("config.database.user"), v.GetString("config.database.dbname")))
 	if err != nil {

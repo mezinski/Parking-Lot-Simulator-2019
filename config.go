@@ -1,4 +1,4 @@
-package config
+package main
 
 import (
 	"fmt"
@@ -10,7 +10,7 @@ import (
 func InitConfig() (*viper.Viper, error) {
 	v := viper.New()
 	v.SetConfigName("config")
-	v.AddConfigPath("./config")
+	v.AddConfigPath(".")
 	v.SetConfigType("yaml")
 	err := v.ReadInConfig()
 	if err != nil {
