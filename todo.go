@@ -39,6 +39,7 @@ func main() {
 	e.DELETE("/tasks/:id", todo.DeleteTask)
 
 	e.POST("tickets", vehicle.PostVehicleEntry)
+	e.POST("/tickets/:id/:duration", vehicle.PostVehicleDuration)
 	//e.GET("/tickets/:id")
 	e.POST("/payments/:id", vehicle.PostVehiclePayment)
 

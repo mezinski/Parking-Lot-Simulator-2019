@@ -16,7 +16,7 @@ type Task struct {
 type ParkedVehicle struct {
 	ID           uint   `json:"id"`
 	LicensePlate string `json:"license_plate"`
-	Duration     uint   `json:"duration"`
+	Duration     int    `json:"duration"`
 	IsParked     bool   `json:"is_parked"`
 	TotalPaid    uint   `json:"total_paid"`
 }
@@ -98,11 +98,6 @@ func PostVehicleEntry(db *gorm.DB, licensePlate string) (int64, error) {
 	return idInt, result.Error
 }
 
-//UpdateParkingDuration ...
-func UpdateParkingDuration(db *gorm.DB) (int64, error) {
-	return 0, nil
-}
-
 //PutTask ...
 func PutTask(db *gorm.DB, name string) (int64, error) {
 
@@ -122,8 +117,28 @@ func PutTask(db *gorm.DB, name string) (int64, error) {
 	return idInt, result.Error
 }
 
+//PostVehicleDuration ...
+func PostVehicleDuration(db *gorm.DB, id int, duration int) (int64, string, int, error) {
+
+	var result *gorm.DB
+	var isRecord bool
+	var vehicle ParkedVehicle
+
+	if err := db.Where("id = ?", id).First(&vehicle).Error; err != nil {
+		isRecord = false
+	} else {
+		isRecord = true
+	}
+
+	if isRecord {
+		result = db.Model(&vehicle).Where("id = ?", id).Update("duration", duration)
+		return result.RowsAffected, vehicle.LicensePlate, vehicle.Duration, nil
+	}
+	return 0, "N/A", 0, fmt.Errorf("No record found for vehicle with ticket id %d", id)
+}
+
 //PostVehiclePayment ...
-func PostVehiclePayment(db *gorm.DB, id int) (int64, string, uint, uint, error) {
+func PostVehiclePayment(db *gorm.DB, id int) (int64, string, int, uint, error) {
 
 	var result *gorm.DB
 	var isRecord bool

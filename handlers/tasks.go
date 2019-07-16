@@ -67,6 +67,28 @@ func (v *Vehicles) PostVehicleEntry(c echo.Context) error {
 	})
 }
 
+//PostVehicleDuration ...
+func (v *Vehicles) PostVehicleDuration(c echo.Context) error {
+
+	id, _ := strconv.Atoi(c.Param("id"))
+	duration, _ := strconv.Atoi(c.Param("duration"))
+
+	_, licensePlate, duration, err := models.PostVehicleDuration(v.Db, id, duration)
+
+	if err == nil {
+		message := fmt.Sprintf("Your ticket is valid for %d hours. Please pay on your way out.", duration)
+		return c.JSON(http.StatusOK, H{
+			"id":            id,
+			"license_plate": licensePlate,
+			"duration":      duration,
+			"message":       message,
+		})
+	}
+	return c.JSON(http.StatusOK, H{
+		"message": err.Error(),
+	})
+}
+
 //PostVehiclePayment ...
 func (v *Vehicles) PostVehiclePayment(c echo.Context) error {
 
