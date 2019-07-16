@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/jinzhu/gorm"
+	"github.com/spf13/viper"
 )
 
 //Task struct
@@ -143,6 +144,7 @@ func PostVehiclePayment(db *gorm.DB, id int) (int64, string, int, uint, error) {
 	var result *gorm.DB
 	var isRecord bool
 	var vehicle ParkedVehicle
+	var price int
 
 	if err := db.Where("id = ?", id).First(&vehicle).Error; err != nil {
 		isRecord = false
@@ -151,11 +153,24 @@ func PostVehiclePayment(db *gorm.DB, id int) (int64, string, int, uint, error) {
 	}
 	fmt.Println(vehicle)
 	if isRecord {
-		result = db.Model(&vehicle).Where("id = ?", id).Updates(map[string]interface{}{"duration": 1, "total_paid": 3, "is_parked": false})
+
+		switch vehicle.Duration {
+		case 1:
+			price = viper.GetInt("config.parking-lot.starting-rate")
+		case 3:
+			price = (viper.GetInt("config.parking-lot.starting-rate") * viper.GetInt("config.parking-lot.three-hour-mod"))
+		case 6:
+			price = (viper.GetInt("config.parking-lot.starting-rate") * viper.GetInt("config.parking-lot.six-hour-mod"))
+		case 24:
+			price = (viper.GetInt("config.parking-lot.starting-rate") * viper.GetInt("config.parking-lot.all-day-mod"))
+		default:
+			return 0, "N/A", 0, 0, fmt.Errorf("%dhrs is not one of our parking options", vehicle.Duration)
+		}
+
+		result = db.Model(&vehicle).Where("id = ?", id).Updates(map[string]interface{}{"total_paid": price, "is_parked": false})
 		fmt.Println(vehicle)
 		return result.RowsAffected, vehicle.LicensePlate, vehicle.Duration, vehicle.TotalPaid, nil
 	}
-
 	return 0, "N/A", 0, 0, fmt.Errorf("No record found for vehicle with ticket id %d", id)
 }
 

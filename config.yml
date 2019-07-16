@@ -7,9 +7,9 @@ config:
   parking-lot:
     max-occupancy: 5
     starting-rate: 3
-    three-hour-price-mod: 1.5
-    six-hour-price-mod: 2.25
-    all-day-price-mod: 3.375
+    three-hour-mod: 1.5
+    six-hour-mod: 2.25
+    all-day-mod: 3.375
   user-data:
     credit-card-type: "VISA"
     credit-card-no: "2453-3594-4295-2943"
