@@ -15,11 +15,11 @@ type Task struct {
 
 //ParkedVehicle ...
 type ParkedVehicle struct {
-	ID           uint   `json:"id"`
-	LicensePlate string `json:"license_plate"`
-	Duration     int    `json:"duration"`
-	IsParked     bool   `json:"is_parked"`
-	TotalPaid    int    `json:"total_paid"`
+	ID           uint    `json:"id"`
+	LicensePlate string  `json:"license_plate"`
+	Duration     int     `json:"duration"`
+	IsParked     bool    `json:"is_parked"`
+	TotalPaid    float64 `json:"total_paid"`
 }
 
 //TaskCollection ...
@@ -139,12 +139,12 @@ func PostVehicleDuration(db *gorm.DB, id int, duration int) (int64, string, int,
 }
 
 //PostVehiclePayment ...
-func PostVehiclePayment(db *gorm.DB, v *viper.Viper, id int) (int64, string, int, int, error) {
+func PostVehiclePayment(db *gorm.DB, v *viper.Viper, id int) (int64, string, int, float64, error) {
 
 	var result *gorm.DB
 	var isRecord bool
 	var vehicle ParkedVehicle
-	var price int
+	var price float64
 
 	if err := db.Where("id = ?", id).First(&vehicle).Error; err != nil {
 		isRecord = false
@@ -155,18 +155,21 @@ func PostVehiclePayment(db *gorm.DB, v *viper.Viper, id int) (int64, string, int
 	if isRecord {
 		fmt.Println(vehicle.Duration)
 		if vehicle.Duration > 0 {
+			fmt.Println("before switch")
 			switch vehicle.Duration {
 			case 1:
-				price = v.GetInt("config.parking-lot.starting-rate")
+				price = v.GetFloat64("config.parking-lot.starting-rate")
 			case 3:
-				price = (v.GetInt("config.parking-lot.starting-rate") * v.GetInt("config.parking-lot.three-hour-mod"))
+				price = (v.GetFloat64("config.parking-lot.starting-rate") * v.GetFloat64("config.parking-lot.three-hour-mod"))
 			case 6:
-				price = (v.GetInt("config.parking-lot.starting-rate") * v.GetInt("config.parking-lot.six-hour-mod"))
+				price = float64((v.GetFloat64("config.parking-lot.starting-rate") * 2.25))
+				fmt.Println(price)
 			case 24:
-				price = (v.GetInt("config.parking-lot.starting-rate") * v.GetInt("config.parking-lot.all-day-mod"))
+				price = (v.GetFloat64("config.parking-lot.starting-rate") * v.GetFloat64("config.parking-lot.all-day-mod"))
 			default:
 				return 0, "N/A", 0, 0, fmt.Errorf("%dhrs is not one of our parking options", vehicle.Duration)
 			}
+			fmt.Println("after switch")
 		}
 		result = db.Model(&vehicle).Where("id = ?", id).Updates(map[string]interface{}{"total_paid": price, "is_parked": false})
 		fmt.Println(vehicle)
