@@ -6,7 +6,7 @@ config:
     dbname: "postgres"
   parking-lot:
     max-occupancy: 5
-    starting-rate: 3
+    starting-rate: 3.0
     three-hour-mod: 1.5
     six-hour-mod: 2.25
     all-day-mod: 3.375

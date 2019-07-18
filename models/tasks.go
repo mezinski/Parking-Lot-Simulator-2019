@@ -2,6 +2,7 @@ package models
 
 import (
 	"fmt"
+	"math"
 
 	"github.com/jinzhu/gorm"
 	"github.com/spf13/viper"
@@ -171,6 +172,7 @@ func PostVehiclePayment(db *gorm.DB, v *viper.Viper, id int) (int64, string, int
 			}
 			fmt.Println("after switch")
 		}
+		price = CustomDecimalRound(price, 0.01)
 		result = db.Model(&vehicle).Where("id = ?", id).Updates(map[string]interface{}{"total_paid": price, "is_parked": false})
 		fmt.Println(vehicle)
 		return result.RowsAffected, vehicle.LicensePlate, vehicle.Duration, vehicle.TotalPaid, nil
@@ -196,4 +198,9 @@ func DeleteTask(db *gorm.DB, id int) (int64, error) {
 	}
 
 	return 0, fmt.Errorf("No record found for task with id %d", id)
+}
+
+//CustomDecimalRound ...
+func CustomDecimalRound(x, unit float64) float64 {
+	return math.Round(x/unit) * unit
 }
