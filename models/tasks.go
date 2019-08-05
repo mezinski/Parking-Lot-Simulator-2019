@@ -1,18 +1,15 @@
 package models
 
 import (
+	"errors"
 	"fmt"
 	"math"
+	"math/rand"
+	"time"
 
 	"github.com/jinzhu/gorm"
 	"github.com/spf13/viper"
 )
-
-//Task struct
-type Task struct {
-	ID   uint   `json:"id"`
-	Name string `json:"name"`
-}
 
 //ParkedVehicle ...
 type ParkedVehicle struct {
@@ -23,14 +20,21 @@ type ParkedVehicle struct {
 	TotalPaid    float64 `json:"total_paid"`
 }
 
-//TaskCollection ...
-type TaskCollection struct {
-	Tasks []Task `json:"items"`
-}
-
 //VehicleCollection ...
 type VehicleCollection struct {
 	ParkedVehicles []ParkedVehicle `json:"parked_vehicles"`
+}
+
+//GetVehicleByID ...
+func GetVehicleByID(db *gorm.DB, id int) (string, int, float64) {
+
+	var vehicle ParkedVehicle
+
+	err := db.Table("parked_vehicles").Where("is_parked = true and id = ?", id).First(&vehicle).Error
+	if err != nil {
+		return "", 0, 0
+	}
+	return vehicle.LicensePlate, vehicle.Duration, vehicle.TotalPaid
 }
 
 //GetVehicles ...
@@ -53,69 +57,34 @@ func GetVehicles(db *gorm.DB) VehicleCollection {
 	return result
 }
 
-//GetTasks ...
-func GetTasks(db *gorm.DB) TaskCollection {
-	rows, err := db.Table("tasks").Rows()
-	if err != nil {
-		panic(err)
-	}
-	defer rows.Close()
-
-	result := TaskCollection{}
-	for rows.Next() {
-		task := Task{}
-		err2 := rows.Scan(&task.ID, &task.Name)
-		if err2 != nil {
-			panic(err2)
-		}
-		result.Tasks = append(result.Tasks, task)
-	}
-	return result
-}
-
 //PostVehicleEntry ...
 func PostVehicleEntry(db *gorm.DB, licensePlate string) (int64, error) {
 
 	var vehicle = ParkedVehicle{LicensePlate: licensePlate}
 
+	randSrc := rand.NewSource(time.Now().UnixNano())
+	rand := rand.New(randSrc)
+
 	totalParked := GetVehicles(db)
 
 	if len(totalParked.ParkedVehicles) >= 5 {
 		fmt.Println("here")
-		return 0, fmt.Errorf("lot is full")
+		return 0, errors.New("Parking lot is full. Please try again later")
 	}
 	vehicle.IsParked = true
+	vehicle.Duration = rand.Intn(24)
 
 	result := db.Create(&vehicle)
 	if result.Error != nil {
-		panic(result.Error)
+		return 0, result.Error
 	}
 
 	result = db.Save(&vehicle)
 	if result.Error != nil {
-		panic(result.Error)
+		return 0, result.Error
 	}
 
 	idInt := int64(vehicle.ID)
-	return idInt, result.Error
-}
-
-//PutTask ...
-func PutTask(db *gorm.DB, name string) (int64, error) {
-
-	var task = Task{Name: name}
-
-	result := db.Create(&task)
-	if result.Error != nil {
-		panic(result.Error)
-	}
-
-	result = db.Save(&task)
-	if result.Error != nil {
-		panic(result.Error)
-	}
-
-	idInt := int64(task.ID)
 	return idInt, result.Error
 }
 
@@ -181,24 +150,24 @@ func PostVehiclePayment(db *gorm.DB, v *viper.Viper, id int) (int64, string, int
 }
 
 //DeleteTask ...
-func DeleteTask(db *gorm.DB, id int) (int64, error) {
+//func DeleteTask(db *gorm.DB, id int) (int64, error) {
 
-	var result *gorm.DB
-	isRecord := true
+// var result *gorm.DB
+// isRecord := true
 
-	if err := db.Where("id = ?", id).First(&Task{}).Error; err != nil {
-		isRecord = false
-	} else {
-		isRecord = true
-	}
+// if err := db.Where("id = ?", id).First(&Task{}).Error; err != nil {
+// 	isRecord = false
+// } else {
+// 	isRecord = true
+// }
 
-	if isRecord {
-		result = db.Where("id = ?", id).Delete(&Task{})
-		return result.RowsAffected, fmt.Errorf("Deleted task with id %d successfully", id)
-	}
+// if isRecord {
+// 	result = db.Where("id = ?", id).Delete(&Task{})
+// 	return result.RowsAffected, fmt.Errorf("Deleted task with id %d successfully", id)
+// }
 
-	return 0, fmt.Errorf("No record found for task with id %d", id)
-}
+// return 0, fmt.Errorf("No record found for task with id %d", id)
+//}
 
 //CustomDecimalRound ...
 func CustomDecimalRound(x, unit float64) float64 {

@@ -1,14 +1,14 @@
 package main
 
 import (
-	"Golang-Code/Go-with-Vue-2/handlers"
-	"Golang-Code/Go-with-Vue-2/models"
 	"fmt"
 
 	"gopkg.in/echo.v3"
 
 	"github.com/jinzhu/gorm"
 	_ "github.com/lib/pq"
+	"github.com/mezinski/Go-with-Vue-2/handlers"
+	"github.com/mezinski/Go-with-Vue-2/models"
 )
 
 func main() {
@@ -23,7 +23,6 @@ func main() {
 		panic(err)
 	}
 
-	db.AutoMigrate(&models.Task{})
 	db.AutoMigrate(&models.ParkedVehicle{})
 
 	defer db.Close()
@@ -35,10 +34,8 @@ func main() {
 	e := echo.New()
 
 	e.File("/", "public/index.html")
-	e.GET("tasks", todo.GetTasks)
-	e.PUT("tasks", todo.PutTask)
-	e.DELETE("/tasks/:id", todo.DeleteTask)
-
+	e.GET("tickets", vehicle.GetVehicles)
+	e.GET("/tickets/:id", vehicle.GetVehicleByID)
 	e.POST("tickets", vehicle.PostVehicleEntry)
 	e.POST("/tickets/:id/:duration", vehicle.PostVehicleDuration)
 	//e.GET("/tickets/:id")

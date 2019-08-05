@@ -102,13 +102,13 @@
                                     you can use custom content here to overwrite
                                     default content
                                   -->
-                                  <h3 slot="header">Pay your ticket</h3>
-                                  <span slot="body">{{vehicle.license_plate}}
-                                    <input type="text"
-                                        class="form-control"
-                                        placeholder="Duration (1hr, 3hr, 6hr, 24h)"
-                                        v-on:keyup.enter="payVehicle"
-                                        v-model="newVehicle.duration">
+                                  <h3 slot="header">Thank you</h3>
+                                  <span slot="body">
+                                    License Plate: <span class="license-plate-display">{{vehicle.license_plate}}</span>
+                                    <br>
+                                    Duration: <span class="duration-display">{{vehicle.duration}}</span>
+                                    <br>
+                                    Total: <span class="total-paid-display">{{vehicle.total_paid}}</span>
                                   </span>
 
                                   <span slot="footer">
@@ -133,9 +133,14 @@
                             v-model="newVehicle.license_plate">
                         <span class="input-group-btn">
                             <button class="btn btn-primary" type="button" v-on:click="createVehicle">Park</button>
-                            
                         </span>
                     </div><!-- /input-group -->
+                    <div class="message-group">
+                      <div v-if="successMessage" class="alert alert-success">{{message}}</div>
+                      <div v-if="failureMessage" class="alert alert-danger">{{message}}</div>
+                      <div v-if="paymentSuccessMessage" class="alert alert-info">{{message}}</div>
+                      <div v-if="paymentFailureMessage" class="alert alert-warning">{{message}}</div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -184,36 +189,23 @@
                   newTask: {},
                   vehicles: [],
                   newVehicle: {},
-                  showModal: false
+                  showModal: false,
+                  message: "",
+                  successMessage: false,
+                  failureMessage: false,
+                  paymentSuccessMessage: false,
+                  paymentFailureMessage: false,
               },
 
           // This is run whenever the page is loaded to make sure we have a current task list
               created: function() {
           // Use the vue-resource $http client to fetch data from the /tasks route
-                  this.$http.get('/tasks').then(function(response) {
-                      this.tasks = response.data.items ? response.data.items : []
+                  this.$http.get('/tickets').then(function(response) {
+                      this.vehicles = response.data.items ? response.data.items : []
                   })
               },
 
               methods: {
-                  createTask: function() {
-                      if (!$.trim(this.newTask.name)) {
-                          this.newTask = {}
-                          return
-                      }
-
-                      // Post the new task to the /tasks route using the $http client
-                      this.$http.put('/tasks', this.newTask).success(function(response) {
-                          this.newTask.id = response.created
-                          this.tasks.push(this.newTask)
-                          console.log("Task created!")
-                          console.log(this.newTask)
-                          this.newTask = {}
-                      }).error(function(error) {
-                          console.log(error)
-                      });
-                  },
-
                   createVehicle: function() {
                     if (!$.trim(this.newVehicle.license_plate)) {
                       this.newVehicle = {}
@@ -222,11 +214,20 @@
 
                     //Post the new vehicle to the /tickets route using the $http client
                     this.$http.post('/tickets', this.newVehicle).success(function(response) {
-                      this.newVehicle.id = response.created
-                      this.vehicles.push(this.newVehicle)
-                      console.log("Vehicle added!")
-                      console.log(this.newVehicle)
-                      this.newVehicle = {}
+                      if(response.created === 0){
+                        this.message = response.error;
+                        this.successMessage = false
+                        this.failureMessage = true
+                      } else {
+                        this.newVehicle.id = response.created
+                        this.vehicles.push(this.newVehicle)
+                        console.log("Vehicle added!")
+                        console.log(this.newVehicle)
+                        this.newVehicle = {}
+                        this.message = "Vehicle parked - Enjoy your stay"
+                        this.failureMessage = false
+                        this.successMessage = true
+                      }
                     }).error(function(error){
                       console.log(error)
                     });
