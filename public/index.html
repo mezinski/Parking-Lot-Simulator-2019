@@ -102,7 +102,7 @@
                                     you can use custom content here to overwrite
                                     default content
                                   -->
-                                  <h3 slot="header">Thank you</h3>
+                                  <h3 slot="header">You pay now!</h3>
                                   <span slot="body">
                                     License Plate: <span class="license-plate-display">{{vehicle.license_plate}}</span>
                                     <br>
@@ -113,7 +113,7 @@
 
                                   <span slot="footer">
                                       Pay
-                                      <button class="btn btn-xs btn-success" type="button" @click="payTicket">
+                                      <button class="btn btn-xs btn-success" type="button" @click="payTicket(vehicle.id)">
                                         <i class="fa fa-credit-card" aria-hidden="true"></i>
                                       </button>
                                       Cancel
@@ -233,8 +233,14 @@
                     });
                   },
 
-                  payTicket: function(index) {
+                  payTicket: function(index, id) {
                     //placeholder
+                    this.$http.post('/payments/' + this.vehicles[index].id).success(function(response) {
+                      this.vehicles.splice(index, 1)
+                      console.log("Ticket paid!")
+                    }).error(function(error) {
+                      console.log(error)
+                    })
                   },
 
                   deleteTask: function(index) {

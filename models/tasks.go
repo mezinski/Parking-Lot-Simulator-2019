@@ -58,7 +58,7 @@ func GetVehicles(db *gorm.DB) VehicleCollection {
 }
 
 //PostVehicleEntry ...
-func PostVehicleEntry(db *gorm.DB, licensePlate string) (int64, error) {
+func PostVehicleEntry(db *gorm.DB, c *viper.Viper, licensePlate string) (int64, error) {
 
 	var vehicle = ParkedVehicle{LicensePlate: licensePlate}
 
@@ -73,6 +73,7 @@ func PostVehicleEntry(db *gorm.DB, licensePlate string) (int64, error) {
 	}
 	vehicle.IsParked = true
 	vehicle.Duration = rand.Intn(24)
+	vehicle.TotalPaid = ProcessPayment(c, vehicle.Duration)
 
 	result := db.Create(&vehicle)
 	if result.Error != nil {
@@ -86,6 +87,25 @@ func PostVehicleEntry(db *gorm.DB, licensePlate string) (int64, error) {
 
 	idInt := int64(vehicle.ID)
 	return idInt, result.Error
+}
+
+//ProcessPayment ...
+func ProcessPayment(c *viper.Viper, duration int) float64 {
+	var total float64
+
+	switch {
+	case duration <= 1:
+		total = c.GetFloat64("config.parking-lot.starting-rate")
+	case duration <= 3:
+		total = (c.GetFloat64("config.parking-lot.starting-rate") * c.GetFloat64("config.parking-lot.three-hour-mod"))
+	case duration <= 6:
+		total = float64((c.GetFloat64("config.parking-lot.starting-rate") * c.GetFloat64("config.parking-lot.six-hour-mod")))
+	case duration <= 24:
+		total = (c.GetFloat64("config.parking-lot.starting-rate") * c.GetFloat64("config.parking-lot.all-day-mod"))
+	default:
+		total = 0
+	}
+	return CustomDecimalRound(total, 0.01)
 }
 
 //PostVehicleDuration ...

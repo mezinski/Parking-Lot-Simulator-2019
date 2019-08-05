@@ -25,28 +25,6 @@ type Vehicles struct {
 //H ...
 type H map[string]interface{}
 
-//GetTasks ...
-// func (t *Todos) GetTasks(c echo.Context) error {
-// 	return c.JSON(http.StatusOK, models.GetTasks(t.Db))
-// }
-
-// //PutTask ...
-// func (t *Todos) PutTask(c echo.Context) error {
-
-// 	var task models.Task
-
-// 	c.Bind(&task)
-
-// 	id, err := models.PutTask(t.Db, task.Name)
-
-// 	if err == nil {
-// 		return c.JSON(http.StatusCreated, H{
-// 			"created": id,
-// 		})
-// 	}
-// 	return err
-// }
-
 //GetVehicles ...
 func (v *Vehicles) GetVehicles(c echo.Context) error {
 	return c.JSON(http.StatusOK, models.GetVehicles(v.Db))
@@ -74,7 +52,7 @@ func (v *Vehicles) PostVehicleEntry(c echo.Context) error {
 
 	c.Bind(&vehicle)
 
-	id, err := models.PostVehicleEntry(v.Db, vehicle.LicensePlate)
+	id, err := models.PostVehicleEntry(v.Db, v.Cfg, vehicle.LicensePlate)
 	fmt.Println(id)
 	fmt.Println(err)
 	if err == nil {
