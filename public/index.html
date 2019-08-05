@@ -91,38 +91,38 @@
                 <div class="col-md-4">
                     <h2>Parking Lot</h2>
                     <ul class="list-group">
-                        <li class="list-group-item" v-for="vehicle in vehicles">
-                            {{ vehicle.license_plate }}
+                        <li class="list-group-item" v-for="(vehicle, index) in vehicles">
+                            {{ index.license_plate }}
                             <span class="pull-right">
-                                <button id="show-modal" class="btn btn-xs btn-info" type="button" @click="showModal = true">
+                                <button id="show-modal" class="btn btn-xs btn-info" type="button" @click="showModal = index">
                                   <i class="fa fa-credit-card" aria-hidden="true"></i>
                                 </button>
-                                <modal v-if="showModal" @close="showModal = false">
-                                  <!--
-                                    you can use custom content here to overwrite
-                                    default content
-                                  -->
-                                  <h3 slot="header">You pay now!</h3>
-                                  <span slot="body">
-                                    License Plate: <span class="license-plate-display">{{vehicle.license_plate}}</span>
-                                    <br>
-                                    Duration: <span class="duration-display">{{vehicle.duration}}</span>
-                                    <br>
-                                    Total: <span class="total-paid-display">{{vehicle.total_paid}}</span>
-                                  </span>
-
-                                  <span slot="footer">
-                                      Pay
-                                      <button class="btn btn-xs btn-success" type="button" @click="payTicket(vehicle.id)">
-                                        <i class="fa fa-credit-card" aria-hidden="true"></i>
-                                      </button>
-                                      Cancel
-                                      <button class="btn btn-xs btn-danger" type="button" @click="showModal = false">
-                                        <i class="fa fa-trash-o" aria-hidden="true"></i>
-                                      </button>
-                                  </h5>
-                                </modal>
                             </span>
+                            <modal v-show="showModal === index" @close="showModal = false">
+                                <!--
+                                  you can use custom content here to overwrite
+                                  default content
+                                -->
+                                <h3 slot="header">You pay now!</h3>
+                                <span slot="body">
+                                  License Plate: <span class="license-plate-display">{{index.license_plate}}</span>
+                                  <br>
+                                  Duration: <span class="duration-display">{{index.duration}}</span>
+                                  <br>
+                                  Total: <span class="total-paid-display">{{index.total_paid}}</span>
+                                </span>
+        
+                                <span slot="footer">
+                                    Pay
+                                    <button class="btn btn-xs btn-success" type="button" @click="payTicket($index, vehicle.id)">
+                                      <i class="fa fa-credit-card" aria-hidden="true"></i>
+                                    </button>
+                                    Cancel
+                                    <button class="btn btn-xs btn-danger" type="button" @click="showModal = false">
+                                      <i class="fa fa-trash-o" aria-hidden="true"></i>
+                                    </button>
+                                </h5>
+                            </modal>
                         </li>
                     </ul>
                     <div class="input-group">

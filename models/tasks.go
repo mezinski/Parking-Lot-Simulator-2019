@@ -74,6 +74,7 @@ func PostVehicleEntry(db *gorm.DB, c *viper.Viper, licensePlate string) (int64, 
 	vehicle.IsParked = true
 	vehicle.Duration = rand.Intn(24)
 	vehicle.TotalPaid = ProcessPayment(c, vehicle.Duration)
+	fmt.Println(vehicle.TotalPaid)
 
 	result := db.Create(&vehicle)
 	if result.Error != nil {
@@ -96,16 +97,19 @@ func ProcessPayment(c *viper.Viper, duration int) float64 {
 	switch {
 	case duration <= 1:
 		total = c.GetFloat64("config.parking-lot.starting-rate")
+		return CustomDecimalRound(total, 0.01)
 	case duration <= 3:
 		total = (c.GetFloat64("config.parking-lot.starting-rate") * c.GetFloat64("config.parking-lot.three-hour-mod"))
+		return CustomDecimalRound(total, 0.01)
 	case duration <= 6:
 		total = float64((c.GetFloat64("config.parking-lot.starting-rate") * c.GetFloat64("config.parking-lot.six-hour-mod")))
+		return CustomDecimalRound(total, 0.01)
 	case duration <= 24:
 		total = (c.GetFloat64("config.parking-lot.starting-rate") * c.GetFloat64("config.parking-lot.all-day-mod"))
+		return CustomDecimalRound(total, 0.01)
 	default:
-		total = 0
+		return 0
 	}
-	return CustomDecimalRound(total, 0.01)
 }
 
 //PostVehicleDuration ...
@@ -134,7 +138,6 @@ func PostVehiclePayment(db *gorm.DB, v *viper.Viper, id int) (int64, string, int
 	var result *gorm.DB
 	var isRecord bool
 	var vehicle ParkedVehicle
-	var price float64
 
 	if err := db.Where("id = ?", id).First(&vehicle).Error; err != nil {
 		isRecord = false
@@ -143,26 +146,7 @@ func PostVehiclePayment(db *gorm.DB, v *viper.Viper, id int) (int64, string, int
 	}
 	fmt.Println(vehicle)
 	if isRecord {
-		fmt.Println(vehicle.Duration)
-		if vehicle.Duration > 0 {
-			fmt.Println("before switch")
-			switch vehicle.Duration {
-			case 1:
-				price = v.GetFloat64("config.parking-lot.starting-rate")
-			case 3:
-				price = (v.GetFloat64("config.parking-lot.starting-rate") * v.GetFloat64("config.parking-lot.three-hour-mod"))
-			case 6:
-				price = float64((v.GetFloat64("config.parking-lot.starting-rate") * 2.25))
-				fmt.Println(price)
-			case 24:
-				price = (v.GetFloat64("config.parking-lot.starting-rate") * v.GetFloat64("config.parking-lot.all-day-mod"))
-			default:
-				return 0, "N/A", 0, 0, fmt.Errorf("%dhrs is not one of our parking options", vehicle.Duration)
-			}
-			fmt.Println("after switch")
-		}
-		price = CustomDecimalRound(price, 0.01)
-		result = db.Model(&vehicle).Where("id = ?", id).Updates(map[string]interface{}{"total_paid": price, "is_parked": false})
+		result = db.Model(&vehicle).Where("id = ?", id).Update("is_parked", false)
 		fmt.Println(vehicle)
 		return result.RowsAffected, vehicle.LicensePlate, vehicle.Duration, vehicle.TotalPaid, nil
 	}
