@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -11,26 +10,21 @@ import (
 	"gopkg.in/echo.v3"
 )
 
-//Todos ...
-type Todos struct {
-	Db *gorm.DB
-}
-
-//Vehicles ...
+//Vehicles - This is a struct for vehicles used for handling. We attach the DB object and the Config object to it so we can utilize these intuitively from within the methods they're attributed to.
 type Vehicles struct {
 	Db  *gorm.DB
 	Cfg *viper.Viper
 }
 
-//H ...
+//H This is used to pass back JSON blobs to the requestor
 type H map[string]interface{}
 
-//GetVehicles ...
+//GetVehicles - Handler method used to get all vehicles currently parked in the DB
 func (v *Vehicles) GetVehicles(c echo.Context) error {
 	return c.JSON(http.StatusOK, models.GetVehicles(v.Db))
 }
 
-//GetVehicleByID ...
+//GetVehicleByID - Handler method used to get a vehicle parked in the DB, by ID
 func (v *Vehicles) GetVehicleByID(c echo.Context) error {
 
 	id, _ := strconv.Atoi(c.Param("id"))
@@ -45,7 +39,7 @@ func (v *Vehicles) GetVehicleByID(c echo.Context) error {
 	})
 }
 
-//PostVehicleEntry ...
+//PostVehicleEntry - Handler method to bind to a Vehicle object, create the vehicle object, and return a response to the requestor
 func (v *Vehicles) PostVehicleEntry(c echo.Context) error {
 
 	var vehicle models.ParkedVehicle
@@ -62,63 +56,21 @@ func (v *Vehicles) PostVehicleEntry(c echo.Context) error {
 	})
 }
 
-//PostVehicleDuration ...
-func (v *Vehicles) PostVehicleDuration(c echo.Context) error {
-
-	id, _ := strconv.Atoi(c.Param("id"))
-	duration, _ := strconv.Atoi(c.Param("duration"))
-
-	_, licensePlate, duration, err := models.PostVehicleDuration(v.Db, id, duration)
-
-	if err == nil {
-		message := fmt.Sprintf("Your ticket is valid for %d hours. Please pay on your way out.", duration)
-		return c.JSON(http.StatusOK, H{
-			"id":            id,
-			"license_plate": licensePlate,
-			"duration":      duration,
-			"message":       message,
-		})
-	}
-	return c.JSON(http.StatusOK, H{
-		"message": err.Error(),
-	})
-}
-
-//PostVehiclePayment ...
+//PostVehiclePayment - Handler method used to take in a request for payment, 'process' the payment, and 'remove' the car from the lot
 func (v *Vehicles) PostVehiclePayment(c echo.Context) error {
 
 	id, _ := strconv.Atoi(c.Param("id"))
 	_, licensePlate, duration, totalPaid, err := models.PostVehiclePayment(v.Db, v.Cfg, id)
 
 	if err == nil {
-		message := fmt.Sprintf("Thank you, %s, for choosing sketchypark. Payment has been processed by your %s, Card no. %s", v.Cfg.GetString("config.user-data.name-on-card"), v.Cfg.GetString("config.user-data.credit-card-type"), v.Cfg.GetString("config.user-data.credit-card-no"))
 		return c.JSON(http.StatusOK, H{
 			"id":            id,
 			"license_plate": licensePlate,
 			"duration":      duration,
 			"total_paid":    totalPaid,
-			"message":       message,
 		})
 	}
 	return c.JSON(http.StatusOK, H{
 		"message": err.Error(),
 	})
 }
-
-//DeleteTask ...
-// func (t *Todos) DeleteTask(c echo.Context) error {
-
-// 	id, _ := strconv.Atoi(c.Param("id"))
-// 	_, err := models.DeleteTask(t.Db, id)
-
-// 	if err == nil {
-// 		return c.JSON(http.StatusOK, H{
-// 			"delete_id": id,
-// 			"response":  fmt.Sprintf("%s", err),
-// 		})
-// 	}
-// 	return c.JSON(http.StatusOK, H{
-// 		"delete_id": id,
-// 		"response":  fmt.Sprintf("%s", err),
-// 	})
-// }

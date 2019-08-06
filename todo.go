@@ -13,7 +13,6 @@ import (
 
 func main() {
 
-	var todo handlers.Todos
 	var vehicle handlers.Vehicles
 
 	v, _ := InitConfig()
@@ -27,7 +26,6 @@ func main() {
 
 	defer db.Close()
 
-	todo.Db = db
 	vehicle.Db = db
 	vehicle.Cfg = v
 
@@ -37,8 +35,6 @@ func main() {
 	e.GET("tickets", vehicle.GetVehicles)
 	e.GET("/tickets/:id", vehicle.GetVehicleByID)
 	e.POST("tickets", vehicle.PostVehicleEntry)
-	e.POST("/tickets/:id/:duration", vehicle.PostVehicleDuration)
-	//e.GET("/tickets/:id")
 	e.POST("/payments/:id", vehicle.PostVehiclePayment)
 
 	e.Logger.Fatal(e.Start(":8000"))

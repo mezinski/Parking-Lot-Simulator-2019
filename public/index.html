@@ -2,7 +2,7 @@
     <head>
         <meta http-equiv="content-type" content="text/html; charset=utf-8">
 
-        <title>TODO App</title>
+        <title>SketchyPark™</title>
 
         <!-- Latest compiled and minified CSS -->
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
@@ -99,19 +99,14 @@
                                 </button>
                             </span>
                             <modal v-show="showModal === index" @close="showModal = false">
-                                <!--
-                                  you can use custom content here to overwrite
-                                  default content
-                                -->
                                 <h3 slot="header">You pay now!</h3>
                                 <span slot="body">
-                                  License Plate: <span class="license-plate-display">{{index.license_plate | uppercase}}</span>
+                                  License Plate: <span class="license-plate-display">{{index.license_plate}}</span>
                                   <br>
                                   Duration: <span class="duration-display">{{index.duration}}</span>
                                   <br>
                                   Total: <span class="total-paid-display">{{index.total_paid | currency}}</span>
                                 </span>
-        
                                 <span slot="footer">
                                     Pay
                                     <button class="btn btn-xs btn-success" type="button" @click="payTicket($index, vehicle.id)">
@@ -195,9 +190,7 @@
                   failureMessage: false,
                   paymentMessage: false,
               },
-               // This is run whenever the page is loaded to make sure we have a current task list
               created: function() {
-              // Use the vue-resource $http client to fetch data from the /tasks route
                   this.$http.get('/tickets').then(function(response) {
                       this.vehicles = response.data.parked_vehicles ? response.data.parked_vehicles : []
                   })
@@ -209,8 +202,6 @@
                       this.newVehicle = {}
                       return
                     }
-
-                    //Post the new vehicle to the /tickets route using the $http client
                     this.$http.post('/tickets', this.newVehicle).success(function(response) {
                       if(response.created === 0){
                         this.message = response.error;
@@ -231,7 +222,6 @@
                   },
 
                   payTicket: function(index, id) {
-                    //placeholder
                     this.$http.post('/payments/' + this.vehicles[index].id).success(function(response) {
                       this.vehicles.splice(index, 1)
                       this.message = "Parking paid - Thank you!"
@@ -245,7 +235,6 @@
                   },
 
                   deleteTask: function(index) {
-           // Use the $http client to delete a task by its id
                       this.$http.delete('/tasks/' + this.tasks[index].id).success(function(response) {
                           this.tasks.splice(index, 1)
                           console.log("Task deleted!")
