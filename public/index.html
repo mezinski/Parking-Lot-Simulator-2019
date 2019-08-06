@@ -103,9 +103,9 @@
                                 <span slot="body">
                                   License Plate: <span class="license-plate-display">{{index.license_plate}}</span>
                                   <br>
-                                  Duration: <span class="duration-display">{{index.duration}}</span>
+                                  Parking Duration: <span class="duration-display">{{index.duration}}hr</span>
                                   <br>
-                                  Total: <span class="total-paid-display">{{index.total_paid | currency}}</span>
+                                  Total Cost: <span class="total-paid-display">{{index.total_paid | currency}}</span>
                                 </span>
                                 <span slot="footer">
                                     Pay
@@ -206,8 +206,8 @@
                       if(response.created === 0){
                         this.message = response.error;
                         this.paymentMessage = false
-                        this.successMessage = false
                         this.failureMessage = true
+                        this.successMessage = false
                       } else {
                         this.vehicles.push(response)
                         this.newVehicle = {}
@@ -228,19 +228,9 @@
                       this.failureMessage = false
                       this.successMessage = false
                       this.paymentMessage = true
-                      console.log("Ticket paid!")
                     }).error(function(error) {
                       console.log(error)
                     })
-                  },
-
-                  deleteTask: function(index) {
-                      this.$http.delete('/tasks/' + this.tasks[index].id).success(function(response) {
-                          this.tasks.splice(index, 1)
-                          console.log("Task deleted!")
-                      }).error(function(error) {
-                          console.log(error)
-                      })
                   }
               }
           })

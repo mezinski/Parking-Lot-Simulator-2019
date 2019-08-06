@@ -14,7 +14,6 @@ func InitConfig() (*viper.Viper, error) {
 	v.SetConfigType("yaml")
 	err := v.ReadInConfig()
 	if err != nil {
-		fmt.Println(err)
 		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
 			panic(fmt.Errorf("Config file was not found: %s", err.Error()))
 		} else {

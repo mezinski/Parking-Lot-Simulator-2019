@@ -51,6 +51,7 @@ func (v *Vehicles) PostVehicleEntry(c echo.Context) error {
 		return c.JSON(http.StatusCreated, newVehicle)
 	}
 	return c.JSON(http.StatusOK, H{
+		"created": 0,
 		"vehicle": newVehicle,
 		"error":   err.Error(),
 	})

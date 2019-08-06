@@ -64,13 +64,17 @@ func GetVehicleByID(db *gorm.DB, id int) (string, int, float64) {
 func PostVehicleEntry(db *gorm.DB, c *viper.Viper, licensePlate string) (ParkedVehicle, error) {
 
 	licensePlate = strings.ToUpper(licensePlate)
+	if hasSymbol(licensePlate) {
+		errorMsg := fmt.Sprintf("Illegal symbol in License Plate: '%s'. No symbols for you!", licensePlate)
+		return ParkedVehicle{}, errors.New(errorMsg)
+	}
+
 	var vehicle = ParkedVehicle{LicensePlate: licensePlate}
 	randSrc := rand.NewSource(time.Now().UnixNano())
 	rand := rand.New(randSrc)
 	totalParked := GetVehicles(db)
 
 	if len(totalParked.ParkedVehicles) >= 5 {
-		fmt.Println("here")
 		return vehicle, errors.New("Parking lot is full. Please try again later")
 	}
 
@@ -131,4 +135,12 @@ func ProcessTotalPaid(c *viper.Viper, duration int) float64 {
 //CustomDecimalRound - This method is able to round to decimal places using a unit of your choice - e.x. you can send in 0.05 to round to the nearest 5 cents for currency, or 0.01 to round to the nearest cent.
 func CustomDecimalRound(x, unit float64) float64 {
 	return math.Round(x/unit) * unit
+}
+
+//hasSymbol - This method is used to check if a license plate submission has any illegal symbols passed in.
+func hasSymbol(str string) bool {
+	if strings.ContainsAny(str, ",.!\\/|[]{}()-_=+@#$%^&*<>") {
+		return true
+	}
+	return false
 }
