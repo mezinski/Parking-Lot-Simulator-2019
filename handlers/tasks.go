@@ -52,17 +52,12 @@ func (v *Vehicles) PostVehicleEntry(c echo.Context) error {
 
 	c.Bind(&vehicle)
 
-	id, err := models.PostVehicleEntry(v.Db, v.Cfg, vehicle.LicensePlate)
-	fmt.Println(id)
-	fmt.Println(err)
+	newVehicle, err := models.PostVehicleEntry(v.Db, v.Cfg, vehicle.LicensePlate)
 	if err == nil {
-		return c.JSON(http.StatusCreated, H{
-			"created":       id,
-			"license_plate": vehicle.LicensePlate,
-		})
+		return c.JSON(http.StatusCreated, newVehicle)
 	}
 	return c.JSON(http.StatusOK, H{
-		"created": id,
+		"vehicle": newVehicle,
 		"error":   err.Error(),
 	})
 }

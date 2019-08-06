@@ -105,11 +105,11 @@
                                 -->
                                 <h3 slot="header">You pay now!</h3>
                                 <span slot="body">
-                                  License Plate: <span class="license-plate-display">{{index.license_plate}}</span>
+                                  License Plate: <span class="license-plate-display">{{index.license_plate | uppercase}}</span>
                                   <br>
                                   Duration: <span class="duration-display">{{index.duration}}</span>
                                   <br>
-                                  Total: <span class="total-paid-display">{{index.total_paid}}</span>
+                                  Total: <span class="total-paid-display">{{index.total_paid | currency}}</span>
                                 </span>
         
                                 <span slot="footer">
@@ -138,8 +138,7 @@
                     <div class="message-group">
                       <div v-if="successMessage" class="alert alert-success">{{message}}</div>
                       <div v-if="failureMessage" class="alert alert-danger">{{message}}</div>
-                      <div v-if="paymentSuccessMessage" class="alert alert-info">{{message}}</div>
-                      <div v-if="paymentFailureMessage" class="alert alert-warning">{{message}}</div>
+                      <div v-if="paymentMessage" class="alert alert-info">{{message}}</div>
                     </div>
                 </div>
             </div>
@@ -184,6 +183,7 @@
           new Vue({
               el: 'body',
 
+
               data: {
                   tasks: [],
                   newTask: {},
@@ -193,13 +193,11 @@
                   message: "",
                   successMessage: false,
                   failureMessage: false,
-                  paymentSuccessMessage: false,
-                  paymentFailureMessage: false,
+                  paymentMessage: false,
               },
-
-          // This is run whenever the page is loaded to make sure we have a current task list
+               // This is run whenever the page is loaded to make sure we have a current task list
               created: function() {
-          // Use the vue-resource $http client to fetch data from the /tasks route
+              // Use the vue-resource $http client to fetch data from the /tasks route
                   this.$http.get('/tickets').then(function(response) {
                       this.vehicles = response.data.parked_vehicles ? response.data.parked_vehicles : []
                   })
@@ -216,15 +214,14 @@
                     this.$http.post('/tickets', this.newVehicle).success(function(response) {
                       if(response.created === 0){
                         this.message = response.error;
+                        this.paymentMessage = false
                         this.successMessage = false
                         this.failureMessage = true
                       } else {
-                        this.newVehicle.id = response.created
-                        this.vehicles.push(this.newVehicle)
-                        console.log("Vehicle added!")
-                        console.log(this.newVehicle)
+                        this.vehicles.push(response)
                         this.newVehicle = {}
                         this.message = "Vehicle parked - Enjoy your stay"
+                        this.paymentMessage = false
                         this.failureMessage = false
                         this.successMessage = true
                       }
@@ -237,6 +234,10 @@
                     //placeholder
                     this.$http.post('/payments/' + this.vehicles[index].id).success(function(response) {
                       this.vehicles.splice(index, 1)
+                      this.message = "Parking paid - Thank you!"
+                      this.failureMessage = false
+                      this.successMessage = false
+                      this.paymentMessage = true
                       console.log("Ticket paid!")
                     }).error(function(error) {
                       console.log(error)

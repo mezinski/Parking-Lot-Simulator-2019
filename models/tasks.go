@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"math"
 	"math/rand"
+	"strings"
 	"time"
 
 	"github.com/jinzhu/gorm"
@@ -58,7 +59,9 @@ func GetVehicles(db *gorm.DB) VehicleCollection {
 }
 
 //PostVehicleEntry ...
-func PostVehicleEntry(db *gorm.DB, c *viper.Viper, licensePlate string) (int64, error) {
+func PostVehicleEntry(db *gorm.DB, c *viper.Viper, licensePlate string) (ParkedVehicle, error) {
+
+	licensePlate = strings.ToUpper(licensePlate)
 
 	var vehicle = ParkedVehicle{LicensePlate: licensePlate}
 
@@ -69,7 +72,7 @@ func PostVehicleEntry(db *gorm.DB, c *viper.Viper, licensePlate string) (int64, 
 
 	if len(totalParked.ParkedVehicles) >= 5 {
 		fmt.Println("here")
-		return 0, errors.New("Parking lot is full. Please try again later")
+		return vehicle, errors.New("Parking lot is full. Please try again later")
 	}
 	vehicle.IsParked = true
 	vehicle.Duration = rand.Intn(24)
@@ -78,16 +81,9 @@ func PostVehicleEntry(db *gorm.DB, c *viper.Viper, licensePlate string) (int64, 
 
 	result := db.Create(&vehicle)
 	if result.Error != nil {
-		return 0, result.Error
+		return vehicle, result.Error
 	}
-
-	result = db.Save(&vehicle)
-	if result.Error != nil {
-		return 0, result.Error
-	}
-
-	idInt := int64(vehicle.ID)
-	return idInt, result.Error
+	return vehicle, result.Error
 }
 
 //ProcessPayment ...
