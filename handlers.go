@@ -44,7 +44,7 @@ func (r *Routing) PostVehicleEntry(c echo.Context) error {
 
 	c.Bind(&vehicle)
 
-	newVehicle, err := models.PostVehicleEntry(r.Db, r.Cfg, vehicle.LicensePlate)
+	newVehicle, err := models.CreateVehicle(r.Db, r.Cfg, vehicle.LicensePlate)
 	if err == nil {
 		return c.JSON(http.StatusCreated, newVehicle)
 	}
@@ -57,15 +57,16 @@ func (r *Routing) PostVehicleEntry(c echo.Context) error {
 
 //PostVehiclePayment - Handler method used to take in a request for payment, 'process' the payment, and 'remove' the car from the lot
 func (r *Routing) PostVehiclePayment(c echo.Context) error {
+	var vehicle models.Vehicle
 	id, _ := strconv.Atoi(c.Param("id"))
-	_, licensePlate, duration, totalPaid, err := models.PostVehiclePayment(r.Db, r.Cfg, id)
+	err := vehicle.PostVehiclePayment(r.Db, id)
 
 	if err == nil {
 		return c.JSON(http.StatusOK, JSONStruct{
 			"id":            id,
-			"license_plate": licensePlate,
-			"duration":      duration,
-			"total_paid":    totalPaid,
+			"license_plate": vehicle.LicensePlate,
+			"duration":      vehicle.Duration,
+			"total_paid":    vehicle.TotalPaid,
 		})
 	}
 	return c.JSON(http.StatusOK, JSONStruct{

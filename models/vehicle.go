@@ -44,8 +44,8 @@ func GetVehicleByID(db *gorm.DB, id int) Vehicle {
 	return vehicle
 }
 
-//PostVehicleEntry - This method is responsible for taking in a 'Vehicle', and storing it's info in the database. Time parked is currently a randomly generated number from 0-24/ 0 will be billed as 1 hour
-func PostVehicleEntry(db *gorm.DB, c *viper.Viper, licensePlate string) (Vehicle, error) {
+//CreateVehicle - This method is responsible for taking in a 'Vehicle', and storing it's info in the database. Time parked is currently a randomly generated number from 0-24/ 0 will be billed as 1 hour
+func CreateVehicle(db *gorm.DB, c *viper.Viper, licensePlate string) (Vehicle, error) {
 	totalParked := GetVehicles(db)
 	if len(totalParked) >= c.GetInt("config.parking-lot.max-occupancy") {
 		return Vehicle{}, errors.New("Parking lot is full. Please try again later")
@@ -63,7 +63,7 @@ func PostVehicleEntry(db *gorm.DB, c *viper.Viper, licensePlate string) (Vehicle
 
 	vehicle.IsParked = true
 	vehicle.Duration = rand.Intn(24)
-	vehicle.TotalPaid = ProcessTotalPaid(c, vehicle.Duration)
+	vehicle.TotalPaid = ProcessTotalPrice(c, vehicle.Duration)
 
 	result := db.Create(&vehicle)
 	if result.Error != nil {
@@ -73,19 +73,17 @@ func PostVehicleEntry(db *gorm.DB, c *viper.Viper, licensePlate string) (Vehicle
 }
 
 //PostVehiclePayment - This method is responsible for updating the DB's entry for a parked vehicle to be paid & 'removed' from the lot
-func PostVehiclePayment(db *gorm.DB, v *viper.Viper, id int) (int64, string, int, float64, error) {
-	var result *gorm.DB
+func (v *Vehicle) PostVehiclePayment(db *gorm.DB, id int) error {
 	var vehicle Vehicle
-
-	if err := db.Where("id = ?", id).First(&vehicle).Error; err != nil {
-		return 0, "N/A", 0, 0, fmt.Errorf("No record found for vehicle with ticket id %d", id)
+	if err := db.Where("id = ?", id).First(&v).Error; err != nil {
+		return fmt.Errorf("No record found for vehicle with ticket id %d", id)
 	}
-	result = db.Model(&vehicle).Where("id = ?", id).Update("is_parked", false)
-	return result.RowsAffected, vehicle.LicensePlate, vehicle.Duration, vehicle.TotalPaid, nil
+	db.Model(&vehicle).Where("id = ?", id).Update("is_parked", false)
+	return nil
 }
 
-//ProcessTotalPaid - This method is responsible for processing what the Total price is, according to configurable modifiers for price based on hours parked for - refer to config.yml for these rates
-func ProcessTotalPaid(c *viper.Viper, duration int) float64 {
+//ProcessTotalPrice - This method is responsible for processing what the Total price is, according to configurable modifiers for price based on hours parked for - refer to config.yml for these rates
+func ProcessTotalPrice(c *viper.Viper, duration int) float64 {
 	var total float64
 
 	switch {
