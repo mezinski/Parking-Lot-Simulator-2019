@@ -1,0 +1,6 @@
+package: github.com/mezinski/Go-with-Vue-2
+import:
+- package: github.com/jinzhu/gorm
+- package: github.com/lib/pq
+- package: github.com/spf13/viper
+- package: gopkg.in/echo.v3
