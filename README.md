@@ -1,6 +1,5 @@
-# Go-with-Vue-2
 # Parking Lot Simulator 2019
-
+<hr>
 This is a basic 'Parking Lot' SPA utilizing Golang &amp; Vue
 
 ## Packages used in this software:
