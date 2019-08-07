@@ -4,13 +4,12 @@ import (
 	"gopkg.in/echo.v3"
 
 	_ "github.com/lib/pq"
-	"github.com/mezinski/Go-with-Vue-2/handlers"
 	"github.com/mezinski/Go-with-Vue-2/models"
 )
 
 func main() {
 
-	var route handlers.Routing
+	var route Routing
 
 	v, _ := InitConfig()
 	db, _ := DbConnection(v)
