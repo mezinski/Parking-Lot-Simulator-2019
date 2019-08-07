@@ -4,13 +4,13 @@
 This is a basic Parking Lot SPA utilizing Golang &amp; Vue
 
 ## Packages used in this software:
-GORM  :            Golang ORM          : github.com/jinzhu/gorm
+<strong>GORM</strong>  : github.com/jinzhu/gorm (ORM for Golang)
 
-PQ    :     Golang Postgres Driver     : github.com/lib/pq
+<strong>PQ</strong>    : github.com/lib/pq (Postgresql Library for Golang
 
-VIPER :   Golang Configuration Package : github.com/spf13/viper
+<strong>VIPER</strong> : github.com/spf13/viper (Configuration package for Golang)
 
-ECHO  :       Golang HTTP routing      : gopkg.in/echo.v3
+<strong>ECHO</strong>  : gopkg.in/echo.v3 (HTTP Routing package for Golang)
 
 Glide is used to manage package dependencies, and package depencies can be found in the glide.yml file.
 
