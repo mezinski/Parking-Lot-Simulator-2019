@@ -10,7 +10,7 @@ import (
 
 func main() {
 
-	var vehicle handlers.Vehicles
+	var routes handlers.Routing
 
 	v, _ := InitConfig()
 	db, _ := DbConnection(v)
@@ -19,16 +19,16 @@ func main() {
 
 	defer db.Close()
 
-	vehicle.Db = db
-	vehicle.Cfg = v
+	routes.Db = db
+	routes.Cfg = v
 
 	e := echo.New()
 
 	e.File("/", "public/index.html")
-	e.GET("tickets", vehicle.GetVehicles)
-	e.GET("/tickets/:id", vehicle.GetVehicleByID)
-	e.POST("tickets", vehicle.PostVehicleEntry)
-	e.POST("/payments/:id", vehicle.PostVehiclePayment)
+	e.GET("tickets", routes.GetVehicles)
+	e.GET("/tickets/:id", routes.GetVehicleByID)
+	e.POST("tickets", routes.PostVehicleEntry)
+	e.POST("/payments/:id", routes.PostVehiclePayment)
 
 	e.Logger.Fatal(e.Start(":8000"))
 }
