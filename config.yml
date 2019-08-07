@@ -1,0 +1,16 @@
+config:
+  database:
+    host: "0.0.0.0"
+    port: "5439"
+    user: "postgres"
+    dbname: "postgres"
+  parking-lot:
+    max-occupancy: 5
+    starting-rate: 3.0
+    three-hour-mod: 1.5
+    six-hour-mod: 2.25
+    all-day-mod: 3.375
+  user-data:
+    credit-card-type: "VISA"
+    credit-card-no: "2453-3594-4295-2943"
+    name-on-card: "MR. Mister Bean"

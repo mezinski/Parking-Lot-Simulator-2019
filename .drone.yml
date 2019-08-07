@@ -1,0 +1,9 @@
+kind: pipeline
+name: go-exercise
+
+steps:
+- name: backend
+  image: golang
+  commands:
+  - go build
+  - go test
