@@ -28,13 +28,13 @@ func (r *Routing) GetVehicles(c echo.Context) error {
 func (r *Routing) GetVehicleByID(c echo.Context) error {
 	id, _ := strconv.Atoi(c.Param("id"))
 
-	licensePlate, duration, totalPaid := models.GetVehicleByID(r.Db, id)
+	vehicle := models.GetVehicleByID(r.Db, id)
 
 	return c.JSON(http.StatusOK, JSONStruct{
 		"id":            id,
-		"license_plate": licensePlate,
-		"duration":      duration,
-		"total_paid":    totalPaid,
+		"license_plate": vehicle.LicensePlate,
+		"duration":      vehicle.Duration,
+		"total_paid":    vehicle.TotalPaid,
 	})
 }
 

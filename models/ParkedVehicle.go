@@ -58,14 +58,14 @@ func GetVehicles(db *gorm.DB) []Vehicle {
 }
 
 //GetVehicleByID - This method will retrieve data for a given vehicle, based on the ID sent in the request
-func GetVehicleByID(db *gorm.DB, id int) (string, int, float64) {
+func GetVehicleByID(db *gorm.DB, id int) Vehicle {
 	var vehicle Vehicle
 
 	err := db.Table("parked_vehicles").Where("is_parked = true and id = ?", id).First(&vehicle).Error
 	if err != nil {
-		return "", 0, 0
+		return Vehicle{}
 	}
-	return vehicle.LicensePlate, vehicle.Duration, vehicle.TotalPaid
+	return vehicle
 }
 
 //PostVehicleEntry - This method is responsible for taking in a 'Vehicle', and storing it's info in the database. Time parked is currently a randomly generated number from 0-24/ 0 will be billed as 1 hour
