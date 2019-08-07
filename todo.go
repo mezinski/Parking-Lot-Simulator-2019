@@ -1,11 +1,8 @@
 package main
 
 import (
-	"fmt"
-
 	"gopkg.in/echo.v3"
 
-	"github.com/jinzhu/gorm"
 	_ "github.com/lib/pq"
 	"github.com/mezinski/Go-with-Vue-2/handlers"
 	"github.com/mezinski/Go-with-Vue-2/models"
@@ -16,11 +13,7 @@ func main() {
 	var vehicle handlers.Vehicles
 
 	v, _ := InitConfig()
-
-	db, err := gorm.Open("postgres", fmt.Sprintf("host=%s port=%s user=%s dbname=%s sslmode=disable", v.GetString("config.database.host"), v.GetString("config.database.port"), v.GetString("config.database.user"), v.GetString("config.database.dbname")))
-	if err != nil {
-		panic(err)
-	}
+	db, _ := DbConnection(v)
 
 	db.AutoMigrate(&models.ParkedVehicle{})
 

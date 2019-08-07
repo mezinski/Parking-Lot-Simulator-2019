@@ -6,7 +6,7 @@ import (
 	"github.com/spf13/viper"
 )
 
-//InitConfig ...
+//InitConfig - This method will initialize a Viper configuration object with our config.yml file
 func InitConfig() (*viper.Viper, error) {
 	v := viper.New()
 	v.SetConfigName("config")
