@@ -5,7 +5,7 @@ import (
 	"strconv"
 
 	"github.com/jinzhu/gorm"
-	"github.com/mezinski/Go-with-Vue-2/models"
+	"github.com/mezinski/Parking-Lot-Simulator-2019/models"
 	"github.com/spf13/viper"
 	"gopkg.in/echo.v3"
 )

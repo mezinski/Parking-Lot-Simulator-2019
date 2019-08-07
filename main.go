@@ -4,7 +4,7 @@ import (
 	"gopkg.in/echo.v3"
 
 	_ "github.com/lib/pq"
-	"github.com/mezinski/Go-with-Vue-2/models"
+	"github.com/mezinski/Parking-Lot-Simulator-2019/models"
 )
 
 func main() {
