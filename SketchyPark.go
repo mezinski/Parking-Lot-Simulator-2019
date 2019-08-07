@@ -15,7 +15,7 @@ func main() {
 	v, _ := InitConfig()
 	db, _ := DbConnection(v)
 
-	db.AutoMigrate(&models.ParkedVehicle{})
+	db.AutoMigrate(&models.Vehicle{})
 
 	defer db.Close()
 

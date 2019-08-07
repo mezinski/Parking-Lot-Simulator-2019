@@ -183,7 +183,7 @@
               },
               created: function() {
                   this.$http.get('/tickets').then(function(response) {
-                      this.vehicles = response.data.parked_vehicles ? response.data.parked_vehicles : []
+                      this.vehicles = response.data ? response.data : []
                   })
               },
 

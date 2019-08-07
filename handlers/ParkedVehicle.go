@@ -16,8 +16,8 @@ type Routing struct {
 	Cfg *viper.Viper
 }
 
-//H This is used to pass back JSON blobs to the requestor
-type H map[string]interface{}
+//JSONStruct - This is used to pass back JSON blobs to the requestor
+type JSONStruct map[string]interface{}
 
 //GetVehicles - Handler method used to get all vehicles currently parked in the DB
 func (r *Routing) GetVehicles(c echo.Context) error {
@@ -30,7 +30,7 @@ func (r *Routing) GetVehicleByID(c echo.Context) error {
 
 	licensePlate, duration, totalPaid := models.GetVehicleByID(r.Db, id)
 
-	return c.JSON(http.StatusOK, H{
+	return c.JSON(http.StatusOK, JSONStruct{
 		"id":            id,
 		"license_plate": licensePlate,
 		"duration":      duration,
@@ -40,7 +40,7 @@ func (r *Routing) GetVehicleByID(c echo.Context) error {
 
 //PostVehicleEntry - Handler method to bind to a Vehicle object, create the vehicle object, and return a response to the requestor
 func (r *Routing) PostVehicleEntry(c echo.Context) error {
-	var vehicle models.ParkedVehicle
+	var vehicle models.Vehicle
 
 	c.Bind(&vehicle)
 
@@ -48,7 +48,7 @@ func (r *Routing) PostVehicleEntry(c echo.Context) error {
 	if err == nil {
 		return c.JSON(http.StatusCreated, newVehicle)
 	}
-	return c.JSON(http.StatusOK, H{
+	return c.JSON(http.StatusOK, JSONStruct{
 		"created": 0,
 		"vehicle": newVehicle,
 		"error":   err.Error(),
@@ -61,14 +61,14 @@ func (r *Routing) PostVehiclePayment(c echo.Context) error {
 	_, licensePlate, duration, totalPaid, err := models.PostVehiclePayment(r.Db, r.Cfg, id)
 
 	if err == nil {
-		return c.JSON(http.StatusOK, H{
+		return c.JSON(http.StatusOK, JSONStruct{
 			"id":            id,
 			"license_plate": licensePlate,
 			"duration":      duration,
 			"total_paid":    totalPaid,
 		})
 	}
-	return c.JSON(http.StatusOK, H{
+	return c.JSON(http.StatusOK, JSONStruct{
 		"message": err.Error(),
 	})
 }
