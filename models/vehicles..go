@@ -26,32 +26,8 @@ func (Vehicle) TableName() string {
 	return "parked_vehicles"
 }
 
-//VehicleCollection - This struct is to hold an object which is an array of vehicle object types.
-type VehicleCollection struct {
-	ParkedVehicles []Vehicle `json:"parked_vehicles"`
-}
-
 //GetVehicles - This method will return all of the vehicles currently parked in the lot
 func GetVehicles(db *gorm.DB) []Vehicle {
-
-	// rows, err := db.Table("parked_vehicles").Where("is_parked = true").Rows()
-	// if err != nil {
-	// 	panic(err)
-	// }
-	// defer rows.Close()
-
-	// result := VehicleCollection{}
-
-	// for rows.Next() {
-	// 	vehicle := Vehicle{}
-	// 	err2 := rows.Scan(&vehicle.ID, &vehicle.LicensePlate, &vehicle.Duration, &vehicle.IsParked, &vehicle.TotalPaid)
-	// 	if err2 != nil {
-	// 		panic(err2)
-	// 	}
-	// 	result.ParkedVehicles = append(result.ParkedVehicles, vehicle)
-	// }
-	// return result
-
 	vehicles := make([]Vehicle, 0)
 	db.Where("is_parked = true").Find(&vehicles)
 	return vehicles
