@@ -47,12 +47,12 @@ func GetVehicleByID(db *gorm.DB, id int) Vehicle {
 //PostVehicleEntry - This method is responsible for taking in a 'Vehicle', and storing it's info in the database. Time parked is currently a randomly generated number from 0-24/ 0 will be billed as 1 hour
 func PostVehicleEntry(db *gorm.DB, c *viper.Viper, licensePlate string) (Vehicle, error) {
 	totalParked := GetVehicles(db)
-	if len(totalParked) >= 5 {
+	if len(totalParked) >= c.GetInt("config.parking-lot.max-occupancy") {
 		return Vehicle{}, errors.New("Parking lot is full. Please try again later")
 	}
 
 	licensePlate = strings.ToUpper(licensePlate)
-	if hasSymbol(licensePlate) {
+	if hasIllegalSymbol(licensePlate) {
 		errorMsg := fmt.Sprintf("Illegal symbol in License Plate: '%s'. No symbols for you!", licensePlate)
 		return Vehicle{}, errors.New(errorMsg)
 	}
@@ -112,7 +112,7 @@ func CustomDecimalRound(x, unit float64) float64 {
 }
 
 //hasSymbol - This method is used to check if a license plate submission has any illegal symbols passed in.
-func hasSymbol(str string) bool {
+func hasIllegalSymbol(str string) bool {
 	if strings.ContainsAny(str, ",.!\\/|[]{}()-_=+@#$%^&*<>") {
 		return true
 	}
