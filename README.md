@@ -2,6 +2,8 @@
 
 This is a basic 'Parking Lot' SPA utilizing Golang &amp; Vue
 
+When all packages are installed, and docker container is running - navigate to <strong>localhost:8000</strong> to use the app.
+
 ## Packages used in this software:
 <strong>GORM</strong>  : github.com/jinzhu/gorm (ORM for Golang)
 
