@@ -38,8 +38,8 @@ func (r *Routing) GetVehicleByID(c echo.Context) error {
 	})
 }
 
-//PostVehicleEntry - Handler method to bind to a Vehicle object, create the vehicle object, and return a response to the requestor
-func (r *Routing) PostVehicleEntry(c echo.Context) error {
+//CreateVehicle - Handler method to bind to a Vehicle object, create the vehicle object, and return a response to the requestor
+func (r *Routing) CreateVehicle(c echo.Context) error {
 	var vehicle models.Vehicle
 
 	c.Bind(&vehicle)
