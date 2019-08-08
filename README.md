@@ -11,6 +11,7 @@ This is a basic 'Parking Lot' SPA utilizing Golang &amp; Vue
 
 <strong>ECHO</strong>  : gopkg.in/echo.v3 (HTTP Routing package for Golang)
 
+<strong>GLIDE : https://glide.sh </strong></br>
 Glide is used to manage package dependencies, and package depencies can be found in the glide.yml file.
 
 ## Docker Commands:
