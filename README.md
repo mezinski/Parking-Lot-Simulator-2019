@@ -7,6 +7,17 @@ This is a basic 'Parking Lot' SPA utilizing Golang &amp; Vue
 <strong>Make sure you have an up-to-date version of Golang installed</strong><br>
 <em>You can download it here: https://golang.org/doc/install</em>
 
+<strong>GLIDE : https://glide.sh </strong></br>
+Glide is used to manage package dependencies, and depencies can be found in the glide.yml file.
+
+`> git clone git@github.com:mezinski/Parking-Lot-Simulator-2019.git`
+
+`> cd Parking-Lot-Simulator-2019`
+
+`> glide install`
+
+`> ./parkinglot`
+
 ## Packages used in this software:
 <strong>GORM</strong>  : github.com/jinzhu/gorm (ORM for Golang)
 
@@ -15,9 +26,6 @@ This is a basic 'Parking Lot' SPA utilizing Golang &amp; Vue
 <strong>VIPER</strong> : github.com/spf13/viper (Configuration package for Golang)
 
 <strong>ECHO</strong>  : gopkg.in/echo.v3 (HTTP Routing package for Golang)
-
-<strong>GLIDE : https://glide.sh </strong></br>
-Glide is used to manage package dependencies, and package depencies can be found in the glide.yml file.
 
 ## Docker Commands:
 
@@ -33,7 +41,7 @@ This will let you enter the postgres DB and poke around while the application is
 # Usage
 
 When all packages are installed, and docker container is running, run the following command in the project directory:<br>
-`./Parking-Lot-Simulator-2019`<br>
+`./parkinglot`<br>
 <i>This will run the compiled binary of the project</i>
 
 Then navigate to <strong>localhost:8000</strong> to use the app.
