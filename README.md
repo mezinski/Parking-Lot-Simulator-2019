@@ -46,7 +46,7 @@ This will let you enter the postgres DB and poke around while the application is
 
 # Usage
 
-When all packages are installed, and docker container is running, run the following command in the project directory:<br>
+When all packages are installed, binary is built, and docker container is running, run the following command in the project directory:<br>
 `> ./parkinglot`<br>
 <i>This will run the compiled binary of the project</i>
 
