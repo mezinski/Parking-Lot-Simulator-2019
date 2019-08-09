@@ -20,6 +20,8 @@ Glide is used to manage package dependencies, and depencies can be found in the 
 
 `> glide install`
 
+`> go build -o parkinglot`
+
 `> ./parkinglot`
 
 ## Packages used in this software:
