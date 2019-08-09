@@ -41,7 +41,7 @@ This will let you enter the postgres DB and poke around while the application is
 # Usage
 
 When all packages are installed, and docker container is running, run the following command in the project directory:<br>
-`./parkinglot`<br>
+`> ./parkinglot`<br>
 <i>This will run the compiled binary of the project</i>
 
 Then navigate to <strong>localhost:8000</strong> to use the app.
@@ -49,6 +49,6 @@ Then navigate to <strong>localhost:8000</strong> to use the app.
 ## Running the tests
 
 Navigate to `Parking-Lot-Simulator-2019/models` in your terminal and run the following command:<br>
-`go test -v`
+`> go test -v`
 
 This will run the test file for the models package, and display verbose output of the results.
