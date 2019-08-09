@@ -26,7 +26,7 @@ Glide is used to manage package dependencies, and package depencies can be found
 1. docker run -d -p 5439:5432 --name postgres postgres
 This will create the postgres container that we will use for this application
 
-2. docker run -d -p 5439:5432 --name postgres postgres
+2. docker exec -it postgres psql -U postgres
 This will let you enter the postgres DB and poke around while the application is running
 ```
 
