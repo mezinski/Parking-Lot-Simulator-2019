@@ -2,6 +2,10 @@
 
 This is a basic 'Parking Lot' SPA utilizing Golang &amp; Vue
 
+## Releases
+Releases are available for all major Operating Systems. 
+Check the release tab for the MacOSX, Linux, and Windows versions
+
 # Install
 
 <strong>Make sure you have an up-to-date version of Golang installed</strong><br>
