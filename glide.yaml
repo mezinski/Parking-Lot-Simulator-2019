@@ -1,4 +1,4 @@
-package: github.com/mezinski/Go-with-Vue-2
+package: github.com/mezinski/Parking-Lot-Simulator-2019
 import:
 - package: github.com/jinzhu/gorm
 - package: github.com/lib/pq

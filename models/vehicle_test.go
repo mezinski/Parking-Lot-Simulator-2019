@@ -16,13 +16,13 @@ of methods that are present in the application, and this is for reason.
 I would like to use this just as a show of knowledge for testing, and that I'm
 versed in how tests work. I did see that tests were an optional choice for the
 technical test, and would much prefer any discussion or time put into this to
-go to me asking you about how you do your tests, and what your TDD looks like.
+go to me asking you about how you do your tests, and what your TDD looks.
 */
 
 func TestVehicles(t *testing.T) {
 	v := viper.New()
-	v.SetConfigName("config")
-	v.AddConfigPath("../")
+	v.SetConfigName("config_test")
+	v.AddConfigPath(".")
 	v.SetConfigType("yaml")
 	err := v.ReadInConfig()
 	if err != nil {
@@ -58,31 +58,10 @@ func TestVehicles(t *testing.T) {
 
 	//Testing hasIllegalSymbol method
 	//Passing in all of the symbols not allowed to make sure the method returns true
-	t.Run("hasIllegalSymbol - ',' character", testHasIllegalSymbol(",", true))
-	t.Run("hasIllegalSymbol - '.' character", testHasIllegalSymbol(".", true))
-	t.Run("hasIllegalSymbol - '!' character", testHasIllegalSymbol("!", true))
-	t.Run("hasIllegalSymbol - '\\' character", testHasIllegalSymbol("\\", true))
-	t.Run("hasIllegalSymbol - '/' character", testHasIllegalSymbol("/", true))
-	t.Run("hasIllegalSymbol - '|' character", testHasIllegalSymbol("|", true))
-	t.Run("hasIllegalSymbol - '[' character", testHasIllegalSymbol("[", true))
-	t.Run("hasIllegalSymbol - ']' character", testHasIllegalSymbol("]", true))
-	t.Run("hasIllegalSymbol - '{' character", testHasIllegalSymbol("{", true))
-	t.Run("hasIllegalSymbol - '}' character", testHasIllegalSymbol("}", true))
-	t.Run("hasIllegalSymbol - '(' character", testHasIllegalSymbol("(", true))
-	t.Run("hasIllegalSymbol - ')' character", testHasIllegalSymbol(")", true))
-	t.Run("hasIllegalSymbol - '-' character", testHasIllegalSymbol("-", true))
-	t.Run("hasIllegalSymbol - '_' character", testHasIllegalSymbol("_", true))
-	t.Run("hasIllegalSymbol - '=' character", testHasIllegalSymbol("=", true))
-	t.Run("hasIllegalSymbol - '+' character", testHasIllegalSymbol("+", true))
-	t.Run("hasIllegalSymbol - '@' character", testHasIllegalSymbol("@", true))
-	t.Run("hasIllegalSymbol - '#' character", testHasIllegalSymbol("#", true))
-	t.Run("hasIllegalSymbol - '$' character", testHasIllegalSymbol("$", true))
-	t.Run("hasIllegalSymbol - '%' character", testHasIllegalSymbol("%", true))
-	t.Run("hasIllegalSymbol - '^' character", testHasIllegalSymbol("^", true))
-	t.Run("hasIllegalSymbol - '&' character", testHasIllegalSymbol("&", true))
-	t.Run("hasIllegalSymbol - '*' character", testHasIllegalSymbol("*", true))
-	t.Run("hasIllegalSymbol - '<' character", testHasIllegalSymbol("<", true))
-	t.Run("hasIllegalSymbol - '>' character", testHasIllegalSymbol(">", true))
+	illegalSymbols := []string{",", ".", "!", "\\", "/", "|", "[", "]", "{", "}", "(", ")", "-", "_", "=", "+", "@", "#", "$", "%", "^", "&", "*", "<", ">"}
+	for _, symbol := range illegalSymbols {
+		t.Run(fmt.Sprintf("hasIllegalSymbol - '%s' character", symbol), testHasIllegalSymbol(symbol, true))
+	}
 }
 
 func testProcessTotalPrice(v *viper.Viper, duration int, expected float64) func(t *testing.T) {
