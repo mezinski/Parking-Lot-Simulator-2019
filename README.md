@@ -2,11 +2,10 @@
 
 This is a basic 'Parking Lot' SPA utilizing Golang &amp; Vue
 
-When all packages are installed, and docker container is running, run the following command in the project directory:<br>
-`./Parking-Lot-Simulator-2019`<br>
-<i>This will run the compiled binary of the project</i>
+# Install
 
-Then navigate to <strong>localhost:8000</strong> to use the app.
+<strong>Make sure you have an up-to-date version of Golang installed</strong><br>
+<em>You can download it here: https://golang.org/doc/install</em>
 
 ## Packages used in this software:
 <strong>GORM</strong>  : github.com/jinzhu/gorm (ORM for Golang)
@@ -31,3 +30,17 @@ This will create the postgres container that we will use for this application
 This will let you enter the postgres DB and poke around while the application is running
 ```
 
+# Usage
+
+When all packages are installed, and docker container is running, run the following command in the project directory:<br>
+`./Parking-Lot-Simulator-2019`<br>
+<i>This will run the compiled binary of the project</i>
+
+Then navigate to <strong>localhost:8000</strong> to use the app.
+
+## Running the tests
+
+Navigate to `Parking-Lot-Simulator-2019/models` in your terminal and run the following command:<br>
+`go test -v`
+
+This will run the test file for the models package, and display verbose output of the results.
